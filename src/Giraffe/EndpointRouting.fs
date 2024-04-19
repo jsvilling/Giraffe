@@ -223,6 +223,9 @@ module Routers =
                     |> MultiEndpoint
         ) |> MultiEndpoint
 
+    let forVerbs (verbs: HttpVerb list) =
+        applyHttpVerbsToEndpoints verbs
+    
     let GET_HEAD = applyHttpVerbsToEndpoints [ GET; HEAD ]
 
     let GET     = applyHttpVerbToEndpoints GET
