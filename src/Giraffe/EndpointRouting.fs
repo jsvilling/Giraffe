@@ -224,8 +224,23 @@ module Routers =
         ) |> MultiEndpoint
 
     let forVerbs (verbs: HttpVerb list) =
-        applyHttpVerbsToEndpoints verbs
+        verbs
+        |> List.distinct
+        |> applyHttpVerbsToEndpoints 
+
+    let route
+        (path     : string)
+        (handler  : HttpHandler) : Endpoint =
+        SimpleEndpoint (HttpVerb.NotSpecified, path, handler, [])
+
+    let handler: HttpHandler = failwith "whatever"
     
+    let api = [
+        forVerbs [ GET; HEAD; OPTIONS ] [
+            route "/api/subpath" handler
+        ]
+    ]
+        
     let GET_HEAD = applyHttpVerbsToEndpoints [ GET; HEAD ]
 
     let GET     = applyHttpVerbToEndpoints GET
@@ -237,11 +252,6 @@ module Routers =
     let OPTIONS = applyHttpVerbToEndpoints OPTIONS
     let TRACE   = applyHttpVerbToEndpoints TRACE
     let CONNECT = applyHttpVerbToEndpoints CONNECT
-
-    let route
-        (path     : string)
-        (handler  : HttpHandler) : Endpoint =
-        SimpleEndpoint (HttpVerb.NotSpecified, path, handler, [])
 
     let routef
         (path         : PrintfFormat<_,_,_,_, 'T>)
